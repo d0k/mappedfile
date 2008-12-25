@@ -49,14 +49,14 @@ namespace util {
 
 MappedFile::MappedFile(const char *path) {
 #ifdef WINDOWS
-	HANDLE hFile = CreateFile(path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE hFile = CreateFileA(path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE) {
 		std::ostringstream oss;
 		oss << "Couldn't open File \"" << path << '"';
 		throw IOException(oss.str());
 	}
 	size = GetFileSize(hFile, NULL);
-	HANDLE hMap = CreateFileMapping(hFile, NULL, PAGE_READONLY, 0, size, NULL);
+	HANDLE hMap = CreateFileMappingA(hFile, NULL, PAGE_READONLY, 0, size, NULL);
 	data = (char*)MapViewOfFile(hMap, FILE_MAP_READ, 0, 0, size);
 	CloseHandle(hMap);
 	CloseHandle(hFile);
