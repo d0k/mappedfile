@@ -2,13 +2,13 @@ MappedFile
 ==========
 
 MappedFile allows you to create a simple read-only file mapping
-in an object-oriented cross-platform way. It may be used to read in
+in an object-oriented cross-platform way. It may be used to read
 *small* files completely in memory without the performance penalty
-of read syscalls.
+of `read` syscalls.
 
 Usage
 -----
-MappedFile is designed to be as minimal as possible and though
+MappedFile is designed to be as minimal as possible and thus
 easy to use. The following example shows this by loading a shader
 into OpenGL.
 
@@ -31,12 +31,16 @@ Supported Operating Systems
 At the time of this writing the following OS were supported:
 
 - Windows 95 and higher through `MapViewOfFile`
+
 - POSIX through `mmap` (enabled for Linux, BSD, OS X and Solaris)
+
   *Note:* If your OS is not in this list but supports `mmap` you may
           want to define `HAVE_MMAP`. Otherwise MappedFile will
-          fall back to an generic backend.
-- Generic through `malloc` and `fread`
-  *Note:* This backend does not use memory-mapped file and is therefore
+          fall back to the `malloc`/`fread` backend.
+
+- Other OS through `malloc` and `fread`
+
+  *Note:* This backend does not use memory-mapped files and is therefore
           substantially slower and may need more memory.
 
 Copyright
