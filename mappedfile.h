@@ -23,7 +23,7 @@
 #ifndef UTIL_MAPPEDFILE_H
 #define UTIL_MAPPEDFILE_H
 
-#include <cstdlib>
+#include <cstddef>
 #include <stdexcept>
 
 namespace util {
@@ -34,7 +34,7 @@ namespace util {
  */
 class MappedFile {
 private:
-	size_t size;
+	std::size_t size;
 	char *data;
 	MappedFile(const MappedFile& x) {}
 	MappedFile& operator=(const MappedFile& x) {return *this;}
@@ -53,11 +53,11 @@ public:
 	/*!
 	 * Get the size of the file in memory.
 	 */
-	size_t length() const { return size; }
+	std::size_t length() const { return size; }
 	/*!
 	 * Gets the nth byte from the mapped file.
 	 */
-	char operator[](size_t n) const { return data[n]; }
+	char operator[](std::size_t n) const { return data[n]; }
 	/*!
 	 * Gets a read-only pointer to the mapped data.
 	 */
