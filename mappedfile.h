@@ -28,6 +28,10 @@
 
 namespace util {
 
+/*!
+ * MappedFile allows you to create a simple read-only file mapping in an
+ * object-oriented cross-platform way.
+ */
 class MappedFile {
 private:
 	size_t size;
@@ -35,10 +39,28 @@ private:
 	MappedFile(const MappedFile& x) {}
 	MappedFile& operator=(const MappedFile& x) {return *this;}
 public:
+	/*!
+	 * Maps the named file into memory.
+	 * The file is mapped into memory. All filehandles are closed afterwards.
+	 * \param path path of the file being mapped
+	 * \exception IOException the file couldn't be opened
+	 */
 	MappedFile(const char *path);
+	/*!
+	 * Unmaps the file and releases all memory.
+	 */
 	~MappedFile();
+	/*!
+	 * Get the size of the file in memory.
+	 */
 	size_t length() const { return size; }
+	/*!
+	 * Gets the nth byte from the mapped file.
+	 */
 	char operator[](size_t n) const { return data[n]; }
+	/*!
+	 * Gets a read-only pointer to the mapped data.
+	 */
 	const char* ptr() const { return data; }
 	struct IOException : public std::runtime_error {
 		IOException(const std::string& message) : std::runtime_error(message) {}
