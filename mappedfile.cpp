@@ -23,13 +23,17 @@
 #include "mappedfile.h"
 #include <sstream>
 
+#if defined(_WIN32) || defined(_WIN64)
+#define WINDOWS
+#endif
+
 #ifndef HAVE_MMAP
-#if defined(__linux__) || defined(BSD) || defined(__APPLE__) || defined(__SVR4) // linux, bsd, OSX, solaris
+#if defined(__unix) || defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
 #define HAVE_MMAP 1
 #endif
 #endif
 
-#ifdef _WIN32
+#ifdef WINDOWS
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #elif HAVE_MMAP
@@ -44,7 +48,7 @@
 namespace util {
 
 MappedFile::MappedFile(const char *path) {
-#ifdef _WIN32
+#ifdef WINDOWS
 	HANDLE hFile = CreateFile(path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE) {
 		std::ostringstream oss;
@@ -83,7 +87,7 @@ MappedFile::MappedFile(const char *path) {
 }
 
 MappedFile::~MappedFile() {
-#ifdef _WIN32
+#ifdef WINDOWS
 	UnmapViewOfFile(data);
 #elif HAVE_MMAP
 	munmap(data, size);

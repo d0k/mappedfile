@@ -32,11 +32,7 @@ At the time of this writing the following OS were supported:
 
 - Windows 95 and higher through `MapViewOfFile`
 
-- POSIX through `mmap` (enabled for Linux, BSD, OS X and Solaris)
-
-  *Note:* If your OS is not in this list but supports `mmap` you may
-          want to define `HAVE_MMAP`. Otherwise MappedFile will
-          fall back to the `malloc`/`fread` backend.
+- POSIX through `mmap`
 
 - Other OS through `malloc` and `fread`
 
