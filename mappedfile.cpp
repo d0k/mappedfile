@@ -21,7 +21,7 @@
  */
 
 #include "mappedfile.h"
-#include <sstream>
+#include <string>
 
 #if defined(_WIN32) || defined(_WIN64)
 #define WINDOWS
@@ -52,9 +52,7 @@ MappedFile::MappedFile(const char *path) {
 #ifdef WINDOWS
 	HANDLE hFile = CreateFileA(path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE) {
-		std::ostringstream oss;
-		oss << "Couldn't open File \"" << path << '"';
-		throw IOException(oss.str());
+		throw IOException(std::string("Couldn't open File \"") + path + "\"");
 	}
 	size = GetFileSize(hFile, NULL);
 	HANDLE hMap = CreateFileMappingA(hFile, NULL, PAGE_READONLY, 0, size, NULL);
@@ -64,9 +62,7 @@ MappedFile::MappedFile(const char *path) {
 #elif HAVE_MMAP
 	int fd = open(path, O_RDONLY);
 	if (fd < 0) {
-		std::ostringstream oss;
-		oss << "Couldn't open File \"" << path << '"';
-		throw IOException(oss.str());
+		throw IOException(std::string("Couldn't open File \"") + path + "\"");
 	}
 	size = lseek(fd, 0, SEEK_END);
 	data = (char*)mmap(NULL, size, PROT_READ, MAP_SHARED, fd, 0);
@@ -74,9 +70,7 @@ MappedFile::MappedFile(const char *path) {
 #else
 	FILE *fd = fopen(path, "r");
 	if (fd == NULL) {
-		std::ostringstream oss;
-		oss << "Couldn't open File \"" << path << '"';
-		throw IOException(oss.str());
+		throw IOException(std::string("Couldn't open File \"") + path + "\"");
 	}
 	fseek(fd, 0, SEEK_END);
 	size = ftell(fd);
