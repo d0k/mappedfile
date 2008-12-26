@@ -24,7 +24,9 @@
 #define UTIL_MAPPEDFILE_H
 
 #include <cstddef>
+#ifndef NO_EXCEPTIONS
 #include <stdexcept>
+#endif
 
 namespace util {
 
@@ -62,9 +64,12 @@ public:
 	 * Gets a read-only pointer to the mapped data.
 	 */
 	const char* ptr() const { return data; }
+
+#ifndef NO_EXCEPTIONS
 	struct IOException : public std::runtime_error {
 		IOException(const std::string& message) : std::runtime_error(message) {}
 	};
+#endif
 };
 
 }

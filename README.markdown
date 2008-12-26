@@ -25,15 +25,16 @@ into OpenGL.
 	glShaderSource(shader, map.length(), map.ptr(), NULL);
 	// the file is automatically unmapped if map goes out of scope
 
+If you don't want to use exceptions define `NO_EXCEPTIONS`. MappedFile will
+then call exit(1) if an error occurs.
+
 Supported Operating Systems
 ---------------------------
 
 At the time of this writing the following OS were supported:
 
 - Windows 95 and higher through `MapViewOfFile`
-
 - POSIX through `mmap`
-
 - Other OS through `malloc` and `fread`
 
   *Note:* This backend does not use memory-mapped files and is therefore

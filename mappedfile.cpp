@@ -22,6 +22,10 @@
 
 #include "mappedfile.h"
 #include <string>
+#ifdef NO_EXCEPTIONS
+#include <iostream>
+#include <stdlib.h>
+#endif
 
 #if defined(_WIN32) || defined(_WIN64)
 #define WINDOWS
@@ -48,11 +52,20 @@
 
 namespace util {
 
+static inline void error(const std::string& mess) {
+#ifndef NO_EXCEPTIONS
+	throw MappedFile::IOException(mess);
+#else
+	std::clog << mess << std::endl;
+	exit(EXIT_FAILURE);
+#endif
+}
+
 MappedFile::MappedFile(const char *path) {
 #ifdef WINDOWS
 	HANDLE hFile = CreateFileA(path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE) {
-		throw IOException(std::string("Couldn't open File \"") + path + "\"");
+		error(std::string("Couldn't open File \"") + path + "\"");
 	}
 	size = GetFileSize(hFile, NULL);
 	HANDLE hMap = CreateFileMappingA(hFile, NULL, PAGE_READONLY, 0, size, NULL);
@@ -62,7 +75,7 @@ MappedFile::MappedFile(const char *path) {
 #elif HAVE_MMAP
 	int fd = open(path, O_RDONLY);
 	if (fd < 0) {
-		throw IOException(std::string("Couldn't open File \"") + path + "\"");
+		error(std::string("Couldn't open File \"") + path + "\"");
 	}
 	size = lseek(fd, 0, SEEK_END);
 	data = (char*)mmap(NULL, size, PROT_READ, MAP_SHARED, fd, 0);
@@ -70,7 +83,7 @@ MappedFile::MappedFile(const char *path) {
 #else
 	FILE *fd = fopen(path, "rb");
 	if (fd == NULL) {
-		throw IOException(std::string("Couldn't open File \"") + path + "\"");
+		error(std::string("Couldn't open File \"") + path + "\"");
 	}
 	fseek(fd, 0, SEEK_END);
 	size = ftell(fd);
