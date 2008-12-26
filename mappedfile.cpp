@@ -68,7 +68,7 @@ MappedFile::MappedFile(const char *path) {
 	data = (char*)mmap(NULL, size, PROT_READ, MAP_SHARED, fd, 0);
 	close(fd);
 #else
-	FILE *fd = fopen(path, "r");
+	FILE *fd = fopen(path, "rb");
 	if (fd == NULL) {
 		throw IOException(std::string("Couldn't open File \"") + path + "\"");
 	}
