@@ -38,8 +38,8 @@ class MappedFile {
 private:
 	std::size_t size;
 	char *data;
-	MappedFile(const MappedFile& x) {}
-	MappedFile& operator=(const MappedFile& x) {return *this;}
+	MappedFile(const MappedFile&) {}
+	MappedFile& operator=(const MappedFile&) { return *this; }
 public:
 	/*!
 	 * Maps the named file into memory.
