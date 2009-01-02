@@ -50,8 +50,6 @@
 #include <stdio.h>
 #endif
 
-namespace util {
-
 static inline void error(const std::string& mess) {
 #ifndef NO_EXCEPTIONS
 	throw MappedFile::IOException(mess);
@@ -102,6 +100,5 @@ MappedFile::~MappedFile() {
 #else
 	free(data);
 #endif
-}
 
 }

@@ -20,15 +20,13 @@
  *
  */
 
-#ifndef UTIL_MAPPEDFILE_H
-#define UTIL_MAPPEDFILE_H
+#ifndef MAPPEDFILE_H
+#define MAPPEDFILE_H
 
 #include <cstddef>
 #ifndef NO_EXCEPTIONS
 #include <stdexcept>
 #endif
-
-namespace util {
 
 /*!
  * MappedFile allows you to create a simple read-only file mapping in an
@@ -71,7 +69,5 @@ public:
 	};
 #endif
 };
-
-}
 
 #endif

@@ -14,9 +14,9 @@ into OpenGL.
 
 	GLuint shader = glCreateShader(GL_FRAGMENT_SHADER);
 	try {
-		util::MappedFile map("shader.frag"); // maps "shader.frag" into memory
+		MappedFile map("shader.frag"); // maps "shader.frag" into memory
 		// an exception is thrown if the file cannot be opened
-	} catch (util::MappedFile::IOException e) {
+	} catch (MappedFile::IOException e) {
 		std::cout << e.what() << std::endl;
 		std::exit(1);
 	}
