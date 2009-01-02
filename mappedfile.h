@@ -23,9 +23,24 @@
 #ifndef MAPPEDFILE_H
 #define MAPPEDFILE_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <stddef.h>
+
+char *map_file(const char* path, size_t* length);
+void unmap_file(char* data, size_t size);
+
+#ifdef __cplusplus
+}
+
 #include <cstddef>
 #ifndef NO_EXCEPTIONS
 #include <stdexcept>
+#else
+#include <cstdlib>
+#include <iostream>
 #endif
 
 /*!
@@ -34,8 +49,8 @@
  */
 class MappedFile {
 private:
-	std::size_t size;
-	char *data;
+	std::size_t _size;
+	char *_data;
 	MappedFile(const MappedFile&) {}
 	MappedFile& operator=(const MappedFile&) { return *this; }
 public:
@@ -45,29 +60,42 @@ public:
 	 * \param path path of the file being mapped
 	 * \exception IOException the file couldn't be opened
 	 */
-	MappedFile(const char *path);
+	MappedFile(const char *path) {
+		_data = map_file(path, &_size);
+		if (_data == NULL) {
+#ifndef NO_EXCEPTIONS
+			throw IOException(std::string("Couldn't open File \"") + path + "\"");
+#else
+			std::clog << "Couldn't open File \"" << path << "\"" << std::endl;
+			std::exit(EXIT_FAILURE);
+#endif
+		}
+	}
 	/*!
 	 * Unmaps the file and releases all memory.
 	 */
-	~MappedFile();
+	~MappedFile() {
+		unmap_file(_data, _size);
+	}
 	/*!
 	 * Get the size of the file in memory.
 	 */
-	std::size_t length() const { return size; }
+	std::size_t size() const { return _size; }
 	/*!
 	 * Gets the nth byte from the mapped file.
 	 */
-	char operator[](std::size_t n) const { return data[n]; }
+	char operator[](std::size_t n) const { return _data[n]; }
 	/*!
 	 * Gets a read-only pointer to the mapped data.
 	 */
-	const char* ptr() const { return data; }
+	const char* ptr() const { return _data; }
 
 #ifndef NO_EXCEPTIONS
 	struct IOException : public std::runtime_error {
 		IOException(const std::string& message) : std::runtime_error(message) {}
 	};
-#endif
+#endif /* NO_EXCEPTIONS */
 };
+#endif /* __cplusplus */
 
-#endif
+#endif /* MAPPEDFILE_H */
