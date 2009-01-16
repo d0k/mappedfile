@@ -1,7 +1,29 @@
+/* mappedfile.c -- cross-platform wrapper for memory mapped files
+ *
+ * Copyright (C) 2008 Benjamin Kramer
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty.  In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ */
+
 #include "mappedfile.h"
 
 #ifndef HAVE_MMAP
-/* We should check for POSIX/SuS here, but I don't know the revision it */
+/* We should check for POSIX/SuS here, but I don't know the revision mmap */
 /* was introduced. So we just guess that every unix supports this. */
 #if defined(__unix) || defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
 #define HAVE_MMAP 1
@@ -42,6 +64,9 @@ char *map_file(const char* path, size_t* length) {
 		goto fail;
 
 	data = (char*)MapViewOfFile(hMap, FILE_MAP_READ, 0, 0, size);
+
+	/* We can call CloseHandle here, but it will not be closed until
+	 * we unmap the view */
 	CloseHandle(hMap);
 fail:
 	CloseHandle(hFile);
@@ -51,22 +76,25 @@ fail:
 	if (fd < 0)
 		return NULL;
 
+	 /* lseek returns the offset from the beginning of the file */
 	size = lseek(fd, 0, SEEK_END);
 	if (size <= 0)
 		goto fail;
 
+	/* we don't need to lseek again as mmap ignores the offset */
 	data = (char*)mmap(NULL, size, PROT_READ, MAP_SHARED, fd, 0);
 	if (data == (void*)-1) /* does it really return -1? */
 		data = NULL;
 fail:
 	close(fd);
+
 #else
 	FILE *fd = fopen(path, "rb");
 	if (fd == NULL)
 		return NULL;
 
 	fseek(fd, 0, SEEK_END);
-	size = ftell(fd);
+	size = ftell(fd); /* returns the size of the file */
 	if (size <= 0)
 		goto fail;
 
@@ -75,6 +103,7 @@ fail:
 	if (data == NULL)
 		goto fail;
 
+	/* only return the data if the read was successful */
 	if (fread(data, size, 1, fd) != 1) {
 		free(data);
 		data = NULL;
