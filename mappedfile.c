@@ -117,9 +117,9 @@ fail:
 	return data;
 }
 
-/* TODO: fix warning about unused parameters*/
 void unmap_file(char* data, size_t size)
 {
+	(void)size; /* supresses warning about unused parameters */
 #ifdef _WIN32
 	UnmapViewOfFile(data);
 #elif HAVE_MMAP
