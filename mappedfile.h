@@ -49,8 +49,8 @@ void unmap_file(char* data, size_t size);
  */
 class MappedFile {
 private:
-	std::size_t _size;
-	char *_data;
+	std::size_t size_;
+	char *data_;
 	MappedFile(const MappedFile&) {}
 	MappedFile& operator=(const MappedFile&) { return *this; }
 public:
@@ -61,8 +61,8 @@ public:
 	 * \exception IOException the file couldn't be opened
 	 */
 	MappedFile(const char *path) {
-		_data = map_file(path, &_size);
-		if (_data == NULL) {
+		data_ = map_file(path, &size_);
+		if (data_ == NULL) {
 #ifndef NO_EXCEPTIONS
 			throw IOException(std::string("Couldn't open File \"") + path + "\"");
 #else
@@ -75,20 +75,20 @@ public:
 	 * Unmaps the file and releases all memory.
 	 */
 	~MappedFile() {
-		unmap_file(_data, _size);
+		unmap_file(data_, size_);
 	}
 	/*!
 	 * Get the size of the file in memory.
 	 */
-	std::size_t size() const { return _size; }
+	std::size_t size() const { return size_; }
 	/*!
 	 * Gets the nth byte from the mapped file.
 	 */
-	char operator[](std::size_t n) const { return _data[n]; }
+	char operator[](std::size_t n) const { return data_[n]; }
 	/*!
 	 * Gets a read-only pointer to the mapped data.
 	 */
-	const char* ptr() const { return _data; }
+	const char* ptr() const { return data_; }
 
 #ifndef NO_EXCEPTIONS
 	struct IOException : public std::runtime_error {
