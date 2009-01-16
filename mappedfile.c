@@ -83,7 +83,7 @@ fail:
 
 	/* we don't need to lseek again as mmap ignores the offset */
 	data = (char*)mmap(NULL, size, PROT_READ, MAP_SHARED, fd, 0);
-	if (data == (void*)-1) /* does it really return -1? */
+	if (data == MAP_FAILED)
 		data = NULL;
 fail:
 	close(fd);
