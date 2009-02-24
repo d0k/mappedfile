@@ -3,7 +3,8 @@
 #include "mappedfile.h"
 #include <iostream>
 
-int main() {
+int main()
+{
 	MappedFile map(__FILE__); // maps the file into memory
 
 	// write size bytes from the mapped memory to cout

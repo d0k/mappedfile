@@ -25,10 +25,11 @@
 #ifndef HAVE_MMAP
 /* We should check for POSIX/SuS here, but I don't know the revision mmap */
 /* was introduced. So we just guess that every unix supports this. */
-#if defined(__unix) || defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
+#if defined(__unix) || defined(__unix__) || \
+	(defined(__APPLE__) && defined(__MACH__))
 #define HAVE_MMAP 1
-#endif
-#endif
+#endif /* UNIX */
+#endif /* HAVE_MMAP */
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -38,20 +39,21 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/mman.h>
-#else
+#else /* !_WIN32 && !HAVE_MMAP */
 #include <stdlib.h>
 #include <stdio.h>
-#endif
+#endif /* !_WIN32 && !HAVE_MMAP */
 
 /* returns NULL on failure */
-char *map_file(const char* path, size_t* length) {
+char *map_file(const char *path, size_t *length)
+{
 	char *data = NULL;
 	size_t size = 0;
 
 #ifdef _WIN32
 	HANDLE hMap;
 	HANDLE hFile = CreateFileA(path, GENERIC_READ, FILE_SHARE_READ, NULL,
-					OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+							   OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 		return NULL;
 
@@ -63,7 +65,7 @@ char *map_file(const char* path, size_t* length) {
 	if (hMap == NULL)
 		goto fail;
 
-	data = (char*)MapViewOfFile(hMap, FILE_MAP_READ, 0, 0, size);
+	data = (char *)MapViewOfFile(hMap, FILE_MAP_READ, 0, 0, size);
 
 	/* We can call CloseHandle here, but it will not be closed until
 	 * we unmap the view */
@@ -76,19 +78,19 @@ fail:
 	if (fd < 0)
 		return NULL;
 
-	 /* lseek returns the offset from the beginning of the file */
+	/* lseek returns the offset from the beginning of the file */
 	size = lseek(fd, 0, SEEK_END);
 	if (size <= 0)
 		goto fail;
 
 	/* we don't need to lseek again as mmap ignores the offset */
-	data = (char*)mmap(NULL, size, PROT_READ, MAP_SHARED, fd, 0);
+	data = (char *)mmap(NULL, size, PROT_READ, MAP_SHARED, fd, 0);
 	if (data == MAP_FAILED)
 		data = NULL;
 fail:
 	close(fd);
 
-#else
+#else /* !_WIN32 && !HAVE_MMAP */
 	FILE *fd = fopen(path, "rb");
 	if (fd == NULL)
 		return NULL;
@@ -99,7 +101,7 @@ fail:
 		goto fail;
 
 	rewind(fd);
-	data = (char*)malloc(size);
+	data = (char *)malloc(size);
 	if (data == NULL)
 		goto fail;
 
@@ -111,20 +113,21 @@ fail:
 
 fail:
 	fclose(fd);
-#endif
+#endif /* !_WIN32 && !HAVE_MMAP */
+
 	if (length != NULL)
 		*length = size;
 	return data;
 }
 
-void unmap_file(char* data, size_t size)
+void unmap_file(char *data, size_t size)
 {
 	(void)size; /* supresses warning about unused parameters */
 #ifdef _WIN32
 	UnmapViewOfFile(data);
 #elif HAVE_MMAP
 	munmap(data, size);
-#else
+#else /* !_WIN32 && !HAVE_MMAP */
 	free(data);
-#endif
+#endif /* !_WIN32 && !HAVE_MMAP */
 }

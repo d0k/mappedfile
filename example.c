@@ -3,10 +3,11 @@
 #include "mappedfile.h"
 #include <stdio.h>
 
-int main() {
+int main(void)
+{
 	size_t size;
 	/* map the file into memory, save filesize in size */
-	char* data = map_file(__FILE__, &size);
+	char *data = map_file(__FILE__, &size);
 
 	/* check if mapping was successful */
 	if (data != NULL) {

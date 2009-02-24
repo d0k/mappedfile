@@ -25,12 +25,12 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif
+#endif /* __cplusplus */
 
 #include <stddef.h>
 
-char *map_file(const char* path, size_t* length);
-void unmap_file(char* data, size_t size);
+char *map_file(const char *path, size_t *length);
+void unmap_file(char *data, size_t size);
 
 #ifdef __cplusplus
 }
@@ -38,16 +38,17 @@ void unmap_file(char* data, size_t size);
 #include <cstddef>
 #ifndef NO_EXCEPTIONS
 #include <stdexcept>
-#else
+#else /* NO_EXCEPTIONS */
 #include <cstdlib>
 #include <iostream>
-#endif
+#endif /* NO_EXCEPTIONS */
 
 /*!
  * MappedFile allows you to create a simple read-only file mapping in an
  * object-oriented cross-platform way.
  */
-class MappedFile {
+class MappedFile
+{
 private:
 	std::size_t size_;
 	char *data_;
@@ -64,11 +65,12 @@ public:
 		data_ = map_file(path, &size_);
 		if (data_ == NULL) {
 #ifndef NO_EXCEPTIONS
-			throw IOException(std::string("Couldn't open File \"") + path + "\"");
-#else
+			throw IOException(std::string("Couldn't open File \"")
+							  + path + "\"");
+#else /* NO_EXCEPTIONS */
 			std::clog << "Couldn't open File \"" << path << "\"" << std::endl;
 			std::exit(EXIT_FAILURE);
-#endif
+#endif /* NO_EXCEPTIONS */
 		}
 	}
 	/*!
@@ -91,8 +93,10 @@ public:
 	const char* ptr() const { return data_; }
 
 #ifndef NO_EXCEPTIONS
-	struct IOException : public std::runtime_error {
-		IOException(const std::string& message) : std::runtime_error(message) {}
+	struct IOException : public std::runtime_error
+	{
+		IOException(const std::string& message)
+				   : std::runtime_error(message) { }
 	};
 #endif /* NO_EXCEPTIONS */
 };
