@@ -37,8 +37,8 @@ At the time of this writing the following OS were supported:
 - POSIX through `mmap`
 - Other OS through `malloc` and `fread`
 
-  *Note:* This backend does not use memory-mapped files and is therefore
-          substantially slower and may need more memory.
+*Note:* The `malloc` backend does not use memory-mapped files and is therefore
+substantially slower and may need more memory.
 
 Copyright
 ---------
