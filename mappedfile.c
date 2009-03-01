@@ -1,6 +1,6 @@
 /* mappedfile.c -- cross-platform wrapper for memory mapped files
  *
- * Copyright (C) 2008 Benjamin Kramer
+ * Copyright (C) 2008-2009 Benjamin Kramer
  *
  * This software is provided 'as-is', without any express or implied
  * warranty.  In no event will the authors be held liable for any damages
@@ -120,13 +120,13 @@ fail:
 	return data;
 }
 
-void unmap_file(char *data, size_t size)
+void unmap_file(char *data, size_t length)
 {
-	(void)size; /* supresses warning about unused parameters */
+	(void)length; /* supresses warning about unused parameters */
 #ifdef _WIN32
 	UnmapViewOfFile(data);
 #elif HAVE_MMAP
-	munmap(data, size);
+	munmap(data, length);
 #else /* !_WIN32 && !HAVE_MMAP */
 	free(data);
 #endif /* !_WIN32 && !HAVE_MMAP */
