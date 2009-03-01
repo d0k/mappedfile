@@ -40,10 +40,15 @@ At the time of this writing the following OS were supported:
 *Note:* The `malloc` backend does not use memory-mapped files and is therefore
 substantially slower and may need more memory.
 
+How do I add MappedFile to my project?
+--------------------------------------
+
+Just copy `mappedfile.c` and `mappedfile.h` to your source tree.
+
 Copyright
 ---------
 
-Copyright (C) 2008 Benjamin Kramer
+Copyright (C) 2008-2009 Benjamin Kramer
 
 This software is provided 'as-is', without any express or implied
 warranty.  In no event will the authors be held liable for any damages
