@@ -5,9 +5,9 @@
 
 int main()
 {
-	MappedFile map(__FILE__); // maps the file into memory
+	mapped_file map(__FILE__); // maps the file into memory
 
 	// write size bytes from the mapped memory to cout
-	std::cout.write(map.ptr(), map.size());
+	std::cout.write(*map, map.length());
 	return 0; // the memory is unmapped when map goes out of scope
 }

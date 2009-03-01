@@ -55,16 +55,16 @@ void unmap_file(char *data, size_t length);
 #endif /* NO_EXCEPTIONS */
 
 /*!
- * MappedFile allows you to create a simple read-only file mapping in an
+ * mapped_file allows you to create a simple read-only file mapping in an
  * object-oriented cross-platform way.
  */
-class MappedFile
+class mapped_file
 {
 private:
 	std::size_t size_;
 	char *data_;
-	MappedFile(const MappedFile&) {}
-	MappedFile& operator=(const MappedFile&) { return *this; }
+	mapped_file(const mapped_file&) {}
+	mapped_file& operator=(const mapped_file&) { return *this; }
 public:
 	/*!
 	 * Maps the named file into memory.
@@ -72,11 +72,11 @@ public:
 	 * \param path path of the file being mapped
 	 * \exception IOException the file couldn't be opened
 	 */
-	MappedFile(const char *path) {
+	mapped_file(const char *path) {
 		data_ = map_file(path, &size_);
 		if (data_ == NULL) {
 #ifndef NO_EXCEPTIONS
-			throw IOException(std::string("Couldn't open File \"")
+			throw io_exception(std::string("Couldn't open File \"")
 							  + path + "\"");
 #else /* NO_EXCEPTIONS */
 			std::clog << "Couldn't open File \"" << path << "\"" << std::endl;
@@ -87,13 +87,13 @@ public:
 	/*!
 	 * Unmaps the file and releases all memory.
 	 */
-	~MappedFile() {
+	~mapped_file() {
 		unmap_file(data_, size_);
 	}
 	/*!
 	 * Get the size of the file in memory.
 	 */
-	std::size_t size() const { return size_; }
+	std::size_t length() const { return size_; }
 	/*!
 	 * Gets the nth byte from the mapped file.
 	 */
@@ -101,12 +101,12 @@ public:
 	/*!
 	 * Gets a read-only pointer to the mapped data.
 	 */
-	const char* ptr() const { return data_; }
+	const char* operator*() const { return data_; }
 
 #ifndef NO_EXCEPTIONS
-	struct IOException : public std::runtime_error
+	struct io_exception : public std::runtime_error
 	{
-		IOException(const std::string& message)
+		io_exception(const std::string& message)
 				   : std::runtime_error(message) { }
 	};
 #endif /* NO_EXCEPTIONS */

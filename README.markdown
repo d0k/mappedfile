@@ -1,31 +1,31 @@
-MappedFile
+mapped_file
 ==========
 
-MappedFile allows you to create a simple read-only file mapping
+mapped_file allows you to create a simple read-only file mapping
 in an object-oriented cross-platform way. It may be used to read
 *small* files completely in memory without the performance penalty
 of `read` syscalls.
 
 Usage
 -----
-MappedFile is designed to be as minimal as possible and thus
-easy to use. The following example shows this by loading a shader
-into OpenGL.
+mapped_file is designed to be as minimal as possible and thus
+easy to use and to extend. The following example shows this by
+loading a shader into OpenGL.
 
 	GLuint shader = glCreateShader(GL_FRAGMENT_SHADER);
 	try {
-		MappedFile map("shader.frag"); // maps "shader.frag" into memory
+		mapped_file map("shader.frag"); // maps "shader.frag" into memory
 		// an exception is thrown if the file cannot be opened
-	} catch (MappedFile::IOException e) {
+	} catch (mapped_file::io_exception e) {
 		std::cout << e.what() << std::endl;
 		std::exit(1);
 	}
 	// map.length() gets the length in bytes of the mapped file
-	// map.ptr() returns a char pointer to the mapped data
-	glShaderSource(shader, map.length(), map.ptr(), NULL);
+	// *map returns a char pointer to the mapped data
+	glShaderSource(shader, map.length(), *map, NULL);
 	// the file is automatically unmapped if map goes out of scope
 
-If you don't want to use exceptions define `NO_EXCEPTIONS`. MappedFile will
+If you don't want to use exceptions define `NO_EXCEPTIONS`. mapped_file will
 then call exit(1) if an error occurs.
 
 Supported Operating Systems
@@ -40,7 +40,7 @@ At the time of this writing the following OS were supported:
 *Note:* The `malloc` backend does not use memory-mapped files and is therefore
 substantially slower and may need more memory.
 
-How do I add MappedFile to my project?
+How do I add mapped_file to my project?
 --------------------------------------
 
 Just copy `mappedfile.c` and `mappedfile.h` to your source tree.
