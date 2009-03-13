@@ -10,7 +10,7 @@ int main(void)
 	char *data = map_file(__FILE__, &size);
 
 	/* check if mapping was successful */
-	if (data != NULL) {
+	if (data) {
 		fwrite(data, size, 1, stdout); /* print mapped memory */
 		unmap_file(data, size); /* release the mapping */
 	}

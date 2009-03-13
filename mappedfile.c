@@ -62,7 +62,7 @@ char *map_file(const char *path, size_t *length)
 		goto fail;
 
 	hMap = CreateFileMappingA(hFile, NULL, PAGE_READONLY, 0, size, NULL);
-	if (hMap == NULL)
+	if (!hMap)
 		goto fail;
 
 	data = (char *)MapViewOfFile(hMap, FILE_MAP_READ, 0, 0, size);
@@ -92,7 +92,7 @@ fail:
 
 #else /* !_WIN32 && !HAVE_MMAP */
 	FILE *fd = fopen(path, "rb");
-	if (fd == NULL)
+	if (!fd)
 		return NULL;
 
 	fseek(fd, 0, SEEK_END);
@@ -102,7 +102,7 @@ fail:
 
 	rewind(fd);
 	data = (char *)malloc(size);
-	if (data == NULL)
+	if (!data)
 		goto fail;
 
 	/* only return the data if the read was successful */
@@ -115,7 +115,7 @@ fail:
 	fclose(fd);
 #endif /* !_WIN32 && !HAVE_MMAP */
 
-	if (length != NULL)
+	if (length)
 		*length = size;
 	return data;
 }

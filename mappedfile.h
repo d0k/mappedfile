@@ -74,7 +74,7 @@ public:
 	 */
 	mapped_file(const char *path) {
 		data_ = map_file(path, &size_);
-		if (data_ == NULL) {
+		if (!data_) {
 #ifndef NO_EXCEPTIONS
 			throw io_exception(std::string("Couldn't open File \"")
 							  + path + "\"");
