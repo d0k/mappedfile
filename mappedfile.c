@@ -23,10 +23,7 @@
 #include "mappedfile.h"
 
 #ifndef HAVE_MMAP
-/* We should check for POSIX/SuS here, but I don't know the revision mmap */
-/* was introduced. So we just guess that every unix supports this. */
-#if defined(__unix) || defined(__unix__) || \
-	(defined(__APPLE__) && defined(__MACH__))
+#if _POSIX_VERSION >= 199506L
 #define HAVE_MMAP 1
 #endif /* UNIX */
 #endif /* HAVE_MMAP */
