@@ -49,6 +49,7 @@ void unmap_file(char *data, size_t length);
 #include <cstddef>
 #ifndef NO_EXCEPTIONS
 #include <stdexcept>
+#include <sstream>
 #else /* NO_EXCEPTIONS */
 #include <cstdlib>
 #include <iostream>
@@ -76,8 +77,9 @@ public:
 		data_ = map_file(path, &size_);
 		if (!data_) {
 #ifndef NO_EXCEPTIONS
-			throw io_exception(std::string("Couldn't open File \"")
-							  + path + "\"");
+			std::ostringstream o;
+			o << "Couldn't open File \"" << path << "\"";
+			throw io_exception(o.str());
 #else /* NO_EXCEPTIONS */
 			std::clog << "Couldn't open File \"" << path << "\"" << std::endl;
 			std::exit(EXIT_FAILURE);
