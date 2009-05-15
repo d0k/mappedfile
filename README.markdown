@@ -25,8 +25,9 @@ loading a shader into OpenGL.
 	glShaderSource(shader, map.length(), *map, NULL);
 	// the file is automatically unmapped if map goes out of scope
 
-If you don't want to use exceptions define `NO_EXCEPTIONS`. mapped_file will
-then call exit(1) if an error occurs.
+If you don't want to use exceptions compile with -fno-exceptions.
+mapped_file will then call exit(1) if an error occurs.
+MSVC Users: You have to define __EXCEPTIONS if you want exceptions.
 
 Supported Operating Systems
 ---------------------------

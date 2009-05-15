@@ -47,13 +47,13 @@ void unmap_file(char *data, size_t length);
 }
 
 #include <cstddef>
-#ifndef NO_EXCEPTIONS
+#ifdef __EXCEPTIONS
 #include <stdexcept>
 #include <sstream>
-#else /* NO_EXCEPTIONS */
+#else /* __EXCEPTIONS */
 #include <cstdlib>
 #include <iostream>
-#endif /* NO_EXCEPTIONS */
+#endif /* __EXCEPTIONS */
 
 /*!
  * mapped_file allows you to create a simple read-only file mapping in an
@@ -76,14 +76,14 @@ public:
 	mapped_file(const char *path)  : size_(), data_() {
 		data_ = map_file(path, &size_);
 		if (!data_) {
-#ifndef NO_EXCEPTIONS
+#ifdef __EXCEPTIONS
 			std::ostringstream o;
 			o << "Couldn't open File \"" << path << "\"";
 			throw io_exception(o.str());
-#else /* NO_EXCEPTIONS */
-			std::clog << "Couldn't open File \"" << path << "\"" << std::endl;
+#else /* __EXCEPTIONS */
+			std::cerr << "Couldn't open File \"" << path << "\"" << std::endl;
 			std::exit(EXIT_FAILURE);
-#endif /* NO_EXCEPTIONS */
+#endif /* __EXCEPTIONS */
 		}
 	}
 	/*!
@@ -105,13 +105,13 @@ public:
 	 */
 	const char* operator*() const { return data_; }
 
-#ifndef NO_EXCEPTIONS
+#ifdef __EXCEPTIONS
 	struct io_exception : public std::runtime_error
 	{
 		io_exception(const std::string& message)
 				   : std::runtime_error(message) { }
 	};
-#endif /* NO_EXCEPTIONS */
+#endif /* __EXCEPTIONS */
 };
 #endif /* __cplusplus */
 
