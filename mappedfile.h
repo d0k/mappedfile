@@ -64,7 +64,7 @@ class mapped_file
 private:
 	std::size_t size_;
 	char *data_;
-	mapped_file(const mapped_file&) {}
+	mapped_file(const mapped_file&) : size_(), data_() {}
 	mapped_file& operator=(const mapped_file&) { return *this; }
 public:
 	/*!
@@ -73,7 +73,7 @@ public:
 	 * \param path path of the file being mapped
 	 * \exception IOException the file couldn't be opened
 	 */
-	mapped_file(const char *path) {
+	mapped_file(const char *path)  : size_(), data_() {
 		data_ = map_file(path, &size_);
 		if (!data_) {
 #ifndef NO_EXCEPTIONS
