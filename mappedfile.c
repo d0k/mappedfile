@@ -22,23 +22,25 @@
 
 #include "mappedfile.h"
 
-#ifndef HAVE_MMAP
-#if _POSIX_VERSION >= 199506L
-#define HAVE_MMAP 1
-#endif /* UNIX */
-#endif /* HAVE_MMAP */
+#if defined(unix) || defined(__unix__) || defined(__unix) || defined(__MACH__)
+#	include <unistd.h>
+#	ifndef HAVE_MMAP
+#		if _POSIX_VERSION >= 199506L
+#			define HAVE_MMAP 1
+#		endif /* _POSIX_VERSION */
+#	endif /* HAVE_MMAP */
+#endif
 
 #ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#	define WIN32_LEAN_AND_MEAN
+#	include <windows.h>
 #elif HAVE_MMAP
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/types.h>
-#include <sys/mman.h>
+#	include <fcntl.h>
+#	include <sys/types.h>
+#	include <sys/mman.h>
 #else /* !_WIN32 && !HAVE_MMAP */
-#include <stdlib.h>
-#include <stdio.h>
+#	include <stdlib.h>
+#	include <stdio.h>
 #endif /* !_WIN32 && !HAVE_MMAP */
 
 /* returns NULL on failure */
